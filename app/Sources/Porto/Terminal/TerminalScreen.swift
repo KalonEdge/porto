@@ -310,9 +310,17 @@ final class TerminalScreen {
                 output += sgr(span.style)
                 current = span.style
             }
-            output += span.text
+            output += TerminalScreen.printable(span.text)
         }
         return output + "\u{1B}[0m"
+    }
+
+    /// Text from processes, branches and session titles with control characters
+    /// removed, so none of it can send escape sequences to the terminal.
+    static func printable(_ text: String) -> String {
+        String(String.UnicodeScalarView(text.unicodeScalars.filter { scalar in
+            !(scalar.value < 0x20 || (0x7F...0x9F).contains(scalar.value))
+        }))
     }
 
     private func sgr(_ style: TextStyle) -> String {

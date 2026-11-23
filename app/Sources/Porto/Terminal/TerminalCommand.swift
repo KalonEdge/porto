@@ -105,7 +105,7 @@ enum TerminalCommand {
         let isDark = UserDefaults.standard.persistentDomain(forName: UserDefaults.globalDomain)?["AppleInterfaceStyle"] as? String == "Dark"
         let headers = ["PORT", "NAME", "BRANCH", "MEMORY", "CPU", "UP", "SESSION"]
         let rows: [[String]] = servers.map { server in
-            [
+            let cells = [
                 ":\(server.port)",
                 server.project.name,
                 server.project.branch ?? "",
@@ -114,6 +114,7 @@ enum TerminalCommand {
                 server.uptime.map(Format.shortDuration) ?? "",
                 server.agent.map { [$0.kind.rawValue, $0.title].compactMap { $0 }.joined(separator: " · ") } ?? "",
             ]
+            return cells.map(TerminalScreen.printable)
         }
         let rightAligned: Set<Int> = [3, 4, 5]
         let widths = headers.indices.map { column in ([headers[column]] + rows.map { $0[column] }).map(TextWidth.of).max() ?? 0 }

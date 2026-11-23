@@ -92,7 +92,7 @@ final class GitHubLookup: ObservableObject {
               let status = (try? JSONSerialization.jsonObject(with: Data(statusJSON.utf8)) as? [[String: Any]])?.first else { return nil }
 
         let link = (status["environment_url"] as? String).flatMap { $0.isEmpty ? nil : $0 } ?? status["target_url"] as? String
-        guard let link, let url = URL(string: link) else { return nil }
+        guard let link, let url = URL(string: link), url.scheme == "https" else { return nil }
         let state: PreviewDeployment.State
         switch status["state"] as? String {
         case "success": state = .ready
@@ -106,7 +106,7 @@ final class GitHubLookup: ObservableObject {
     nonisolated private static func pullRequest(gh: String, root: String, branch: String) -> PullRequestInfo? {
         guard let output = run(gh, ["pr", "list", "--head", branch, "--state", "all", "--limit", "1", "--json", "number,title,url,state"], in: root),
               let pr = (try? JSONSerialization.jsonObject(with: Data(output.utf8)) as? [[String: Any]])?.first,
-              let number = pr["number"] as? Int, let link = pr["url"] as? String, let url = URL(string: link) else { return nil }
+              let number = pr["number"] as? Int, let link = pr["url"] as? String, let url = URL(string: link), url.scheme == "https" else { return nil }
         return PullRequestInfo(number: number, title: pr["title"] as? String ?? "", url: url, state: (pr["state"] as? String ?? "").capitalized)
     }
 

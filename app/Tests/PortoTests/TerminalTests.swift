@@ -63,3 +63,11 @@ struct TerminalTests {
         #expect(empty.text(row: 0) == "⠀⠀⠀")
     }
 }
+
+struct TerminalSafetyTests {
+    @Test func stripsControlCharactersFromProcessText() {
+        #expect(TerminalScreen.printable("dev\u{1B}]52;c;aGk=\u{07}server") == "dev]52;c;aGk=server")
+        #expect(TerminalScreen.printable("a\u{9B}2Jb\u{7F}") == "a2Jb")
+        #expect(TerminalScreen.printable("Größe 中文 :3000") == "Größe 中文 :3000")
+    }
+}
