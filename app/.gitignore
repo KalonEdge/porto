@@ -1,0 +1,6 @@
+.build/
+.swiftpm/
+release.env
+*.p12
+*.p8
+sparkle-private-key*

@@ -1,0 +1,771 @@
+/* The Porto popover, as a working web copy of the SwiftUI views.
+   Sizes follow the app: 400pt wide, 13/16 body, 11/14 captions, 28/32 display. */
+
+.popover {
+  width: 400px;
+  max-height: 672px;
+  overflow: hidden auto;
+  scrollbar-width: none;
+  transition: height 0.36s cubic-bezier(0.22, 1, 0.36, 1);
+  border-radius: 16px;
+  background-color: #202024f2;
+  border: 0.5px solid #ffffff24;
+  box-shadow: 0 0 0 0.5px #00000099, 0 24px 64px #0000008c;
+  color: #f5f5f7;
+  font-family: 'Geist', system-ui, sans-serif;
+  font-size: 13px;
+  line-height: 16px;
+  font-feature-settings: 'tnum';
+  text-align: left;
+}
+
+/* Controls look like the native ones they copy, not like browser buttons. */
+.popover button {
+  margin: 0;
+  border: 0;
+  font: inherit;
+  color: inherit;
+  background: none;
+  cursor: default;
+}
+
+.view {
+  animation: viewIn 0.34s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes viewIn {
+  from {
+    opacity: 0;
+    transform: translate3d(calc(var(--dir, 1) * 18px), 0, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.mono {
+  font-family: 'Geist Mono', ui-monospace, monospace;
+}
+
+.t1 {
+  color: #f5f5f7;
+}
+
+.t2 {
+  color: #ebebf599;
+}
+
+.t3 {
+  color: #ebebf566;
+}
+
+.caption {
+  font-size: 11px;
+  line-height: 14px;
+}
+
+.ellipsis {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ─── Header ─── */
+
+.head {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px 16px 16px;
+}
+
+.titleRow {
+  position: relative;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.title {
+  font-weight: 500;
+  color: #f5f5f7;
+}
+
+.popover .back {
+  position: absolute;
+  left: -4px;
+  top: 0;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+}
+
+.display {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.big {
+  font-family: 'Geist Mono', ui-monospace, monospace;
+  font-size: 28px;
+  line-height: 32px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+.unit {
+  align-self: flex-end;
+  padding-bottom: 4px;
+  font-family: 'Geist Mono', ui-monospace, monospace;
+  color: #ebebf566;
+}
+
+.summaryDetail {
+  margin-inline-start: auto;
+  text-align: end;
+}
+
+.cpuToggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ─── The whole Mac's memory: servers raised, other apps on the baseline, free as track ─── */
+
+.shareBar {
+  position: relative;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.shareBar::before {
+  content: '';
+  position: absolute;
+  inset: 6px 0;
+  background: #ffffff0d;
+  border-radius: 2px;
+  pointer-events: none;
+}
+
+.segment,
+.free {
+  position: relative;
+  flex-basis: 0;
+  min-width: 2px;
+  height: 16px;
+}
+
+.segment::after {
+  content: '';
+  position: absolute;
+  inset: 6px 0;
+  border-radius: 1.5px;
+  background: #f5f5f71f;
+  transition: inset 0.12s, opacity 0.12s, background 0.12s;
+}
+
+.segment[data-raised]::after {
+  inset: 4px 0;
+  background: currentColor;
+}
+
+.segment[data-focused='true']::after {
+  inset: 4px 0;
+  background: #f5f5f7b3;
+}
+
+.segment[data-raised][data-focused='true']::after {
+  inset: 3px 0;
+  background: currentColor;
+}
+
+.segment[data-dim='true']::after {
+  opacity: 0.35;
+}
+
+.legend {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 11px;
+  color: #ebebf599;
+  white-space: nowrap;
+}
+
+.legend > span {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.legend i {
+  width: 8px;
+  height: 4px;
+  border-radius: 1.5px;
+  background: #f5f5f71f;
+}
+
+.legend i[data-servers] {
+  height: 8px;
+  background: #f5f5f7f2;
+}
+
+.legend i[data-free] {
+  background: #ffffff0d;
+}
+
+.legend b {
+  font: inherit;
+  font-family: 'Geist Mono', monospace;
+  color: #ebebf566;
+}
+
+/* ─── Server rows ─── */
+
+.section {
+  border-top: 0.5px solid #ffffff14;
+}
+
+.rows {
+  display: flex;
+  flex-direction: column;
+  padding: 6px;
+}
+
+.row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 9px 10px;
+  border-radius: 9px;
+  text-align: start;
+  cursor: default;
+  transition: background-color 0.12s ease;
+}
+
+.row:hover,
+.row[data-focused='true'] {
+  background-color: #ffffff14;
+}
+
+.row:active {
+  background-color: #ffffff1f;
+}
+
+.row[data-dim='true'] > :not(.rowActions) {
+  opacity: 0.55;
+}
+
+.spark {
+  flex-shrink: 0;
+}
+
+.row[data-cleaning='false']:hover .spark,
+.row[data-cleaning='false']:focus-within .spark {
+  display: none;
+}
+
+/* The app's PortLabel: colon and port in a fixed 58pt column. */
+.portLabel {
+  width: 58px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 2px;
+  direction: ltr;
+}
+
+.port {
+  width: 49px;
+  flex-shrink: 0;
+  font-family: 'Geist Mono', ui-monospace, monospace;
+  font-weight: 500;
+}
+
+.rowMain {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-inline-end: 10px;
+}
+
+.rowName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 500;
+}
+
+.rowSub {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  overflow: hidden;
+  white-space: nowrap;
+  font-size: 11px;
+  line-height: 14px;
+}
+
+.rowActions {
+  display: none;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.row:hover .rowActions,
+.row:focus-within .rowActions {
+  display: flex;
+}
+
+.rowAction {
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+}
+
+.popover .rowAction:hover {
+  background-color: #ffffff1f;
+}
+
+.popover .rowAction:active {
+  background-color: #ffffff2e;
+}
+
+.rowMemory {
+  width: 64px;
+  flex-shrink: 0;
+  text-align: end;
+  font-family: 'Geist Mono', ui-monospace, monospace;
+  color: #f5f5f7d9;
+}
+
+.checkbox {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-inline-end: 12px;
+  border-radius: 5px;
+  background-color: #f5f5f7;
+  transition:
+    background-color 0.12s ease,
+    box-shadow 0.12s ease;
+}
+
+.checkbox svg {
+  transition:
+    opacity 0.12s ease,
+    transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.checkbox[data-checked='false'] {
+  background-color: #ffffff0f;
+  box-shadow: inset 0 0 0 1px #ebebf54d;
+}
+
+.checkbox[data-checked='false'] svg {
+  opacity: 0;
+  transform: scale(0.6);
+}
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 28px 0;
+}
+
+/* ─── Footer and actions ─── */
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+}
+
+.popover .chip {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 12px;
+  border-radius: 7px;
+  background: #ffffff14;
+  box-shadow: inset 0 0.5px 0 #ffffff1f;
+  transition: background-color 0.12s ease;
+}
+
+.chipCount {
+  font-family: 'Geist Mono', ui-monospace, monospace;
+  font-size: 11px;
+  line-height: 14px;
+  font-weight: 500;
+  color: #ebebf599;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+}
+
+.popover .primary {
+  flex: 1 1 0;
+  display: flex;
+  justify-content: center;
+  padding: 7px 12px;
+  border-radius: 8px;
+  background-color: #f5f5f7;
+  color: #0b0d12;
+  transition:
+    background-color 0.12s ease,
+    opacity 0.12s ease;
+}
+
+.popover .primary:hover {
+  background-color: #ffffff;
+}
+
+.popover .primary:active {
+  background-color: #dcdce0;
+}
+
+.popover .destructive {
+  background-color: #ff453a;
+  color: #ffffff;
+}
+
+.popover .destructive:hover {
+  background-color: #ff5a50;
+}
+
+.popover .destructive:disabled {
+  opacity: 0.4;
+}
+
+.popover .secondary {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 12px;
+  border-radius: 8px;
+  background-color: #ffffff14;
+  color: #f5f5f7;
+}
+
+.popover .more {
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  border-radius: 8px;
+  background-color: #ffffff14;
+  color: #f5f5f7;
+}
+
+.more span {
+  width: 3px;
+  height: 3px;
+  border-radius: 3px;
+  background-color: #f5f5f7;
+}
+
+.popover .control {
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 7px;
+  background-color: #ffffff14;
+  transition: background-color 0.12s ease;
+}
+
+.popover .stop {
+  background-color: #ff453a24;
+}
+
+.popover .stop:hover {
+  background-color: #ff453a3d;
+}
+
+.control[data-spinning='true'] svg {
+  animation: spin 0.9s cubic-bezier(0.45, 0, 0.2, 1);
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Like the app's plain buttons, filled controls keep their fill on hover;
+   only the bare back button gains one. */
+.popover .back:hover {
+  background-color: #ffffff1f;
+}
+
+/* ─── Details: info, charts, processes ─── */
+
+.info {
+  display: flex;
+  flex-direction: column;
+  padding: 6px 16px;
+}
+
+.infoRow {
+  height: 30px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.infoLabel {
+  width: 64px;
+  flex-shrink: 0;
+  font-size: 11px;
+  line-height: 14px;
+  color: #ebebf566;
+}
+
+.infoValue {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Like every popover button, it keeps the body size (13/16), not the caption size. */
+.popover .infoMore {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: -4px;
+  padding: 2px 4px;
+  border-radius: 5px;
+  color: #ebebf566;
+}
+
+.popover .infoMore:hover {
+  color: #ebebf5a6;
+}
+
+.infoMore svg {
+  transition: transform 0.2s ease;
+}
+
+.infoMore[data-open='true'] svg {
+  transform: rotate(180deg);
+}
+
+.collapsible {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.collapsible > div {
+  overflow: hidden;
+}
+
+.collapsible[data-open='true'] {
+  grid-template-rows: 1fr;
+}
+
+.chart {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 12px 16px 16px;
+}
+
+.chartHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.chartTitle {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.plot {
+  display: flex;
+  gap: 8px;
+}
+
+.axis {
+  width: 32px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: space-between;
+  font-family: 'Geist Mono', ui-monospace, monospace;
+  font-size: 11px;
+  line-height: 14px;
+  color: #ebebf566;
+}
+
+.chartLine {
+  stroke-dasharray: 1;
+  animation: draw 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both;
+}
+
+@keyframes draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.cpuBar {
+  transform-box: fill-box;
+  transform-origin: bottom;
+  animation: grow 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes grow {
+  from {
+    transform: scaleY(0);
+  }
+}
+
+.popover .processes {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+}
+
+.popover .processes:hover {
+  background-color: #ffffff0a;
+}
+
+.processesChevron {
+  display: flex;
+  transition: transform 0.2s ease;
+}
+
+.processes[data-open='true'] .processesChevron {
+  transform: rotate(90deg);
+}
+
+.processList {
+  display: flex;
+  flex-direction: column;
+  padding: 0 16px 12px;
+}
+
+.processRow {
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 12px;
+}
+
+.processRow > span:last-child {
+  width: 70px;
+  flex-shrink: 0;
+  text-align: right;
+}
+
+.processBar {
+  width: 64px;
+  height: 4px;
+  flex-shrink: 0;
+  margin-left: auto;
+  border-radius: 4px;
+  background: #ffffff14;
+}
+
+.processBar i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: #f5f5f7bf;
+}
+
+/* ─── Focus, disabled ─── */
+
+.popover button:focus-visible,
+.segment:focus-visible,
+.row:focus-visible {
+  outline: 2px solid #6ec7ed;
+  outline-offset: 2px;
+}
+
+.popover button:disabled {
+  opacity: 0.5;
+}
+
+.popover .destructive:disabled {
+  opacity: 0.4;
+}
+
+/* ─── Hebrew: the layout mirrors, ports, numbers and charts stay left to right ─── */
+
+.view[dir='rtl'] .portLabel {
+  justify-content: flex-end;
+}
+
+.view[dir='rtl'] .port {
+  width: auto;
+}
+
+.view[dir='rtl'] :is(.rowMemory, .mono, .legend b) {
+  unicode-bidi: plaintext;
+}
+
+.view[dir='rtl'] .rowMemory {
+  text-align: left;
+}
+
+.view[dir='rtl'] .chart {
+  direction: ltr;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .popover,
+  .collapsible {
+    transition: none;
+  }
+  .view,
+  .chartLine,
+  .cpuBar {
+    animation: none;
+  }
+}

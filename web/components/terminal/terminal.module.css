@@ -1,0 +1,348 @@
+/* `porto` in a draggable, resizable terminal window on the Terminal section's desktop. */
+
+.shell {
+  position: absolute;
+  z-index: 2;
+  opacity: 0;
+  transform: translateY(10px) scale(0.96);
+  transform-origin: 50% 100%;
+  pointer-events: none;
+  transition:
+    opacity 0.16s ease,
+    transform 0.18s ease-in;
+}
+
+.shell[data-visible='true'] {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+  transition:
+    opacity 0.2s ease 0.08s,
+    transform 0.34s cubic-bezier(0.22, 1, 0.36, 1) 0.08s;
+}
+
+.shell[data-desktop='false'] {
+  position: relative;
+}
+
+.window {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 10px;
+  background-color: #141417f2;
+  box-shadow:
+    0 0 0 0.5px #ffffff26,
+    0 24px 60px #00000080,
+    0 4px 14px #00000059;
+  -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: blur(24px);
+  color: #f5f5f7;
+  text-align: left;
+  outline: none;
+}
+
+.title {
+  position: relative;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 500;
+  color: #ffffff8c;
+  border-bottom: 0.5px solid #ffffff1a;
+  -webkit-user-select: none;
+  user-select: none;
+  touch-action: none;
+}
+
+.window[data-focused='false'] .title {
+  color: #ffffff59;
+}
+
+.lights {
+  position: absolute;
+  left: 10px;
+  display: flex;
+  gap: 8px;
+}
+
+.lights button {
+  width: 12px;
+  height: 12px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background-color: #ff5f57;
+  cursor: default;
+}
+
+.lights button:nth-child(2) {
+  background-color: #febc2e;
+}
+
+.lights button:nth-child(3) {
+  background-color: #28c840;
+}
+
+/* Background windows lose their colour, like macOS. */
+.window[data-focused='false'] .lights button {
+  background-color: #ffffff26;
+}
+
+.body {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  padding: 10px 12px 12px;
+  font-family: 'Geist Mono', ui-monospace, monospace;
+  font-size: 11px;
+  line-height: 15px;
+  white-space: pre;
+  cursor: default;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.body strong {
+  font-weight: 500;
+}
+
+/* Invisible grips along each edge and corner, like a macOS window. */
+.grip {
+  position: absolute;
+  z-index: 1;
+  touch-action: none;
+}
+
+.grip[data-edge='n'],
+.grip[data-edge='s'] {
+  left: 10px;
+  right: 10px;
+  height: 6px;
+  cursor: ns-resize;
+}
+
+.grip[data-edge='e'],
+.grip[data-edge='w'] {
+  top: 10px;
+  bottom: 10px;
+  width: 6px;
+  cursor: ew-resize;
+}
+
+.grip[data-edge='n'],
+.grip[data-edge='ne'],
+.grip[data-edge='nw'] {
+  top: 0;
+}
+
+.grip[data-edge='s'],
+.grip[data-edge='se'],
+.grip[data-edge='sw'] {
+  bottom: 0;
+}
+
+.grip[data-edge='e'],
+.grip[data-edge='ne'],
+.grip[data-edge='se'] {
+  right: 0;
+}
+
+.grip[data-edge='w'],
+.grip[data-edge='nw'],
+.grip[data-edge='sw'] {
+  left: 0;
+}
+
+.grip[data-edge='ne'],
+.grip[data-edge='nw'],
+.grip[data-edge='se'],
+.grip[data-edge='sw'] {
+  width: 12px;
+  height: 12px;
+}
+
+.grip[data-edge='ne'],
+.grip[data-edge='sw'] {
+  cursor: nesw-resize;
+}
+
+.grip[data-edge='nw'],
+.grip[data-edge='se'] {
+  cursor: nwse-resize;
+}
+
+/* ─── The character grid ─── */
+
+.line {
+  display: flex;
+  align-items: baseline;
+  min-height: 15px;
+  padding: 0 8px;
+  /* Like a terminal, anything past the last column is cut off. */
+  overflow: hidden;
+}
+
+/* Geist Mono has no braille, so fallback glyphs are pinned to exactly one column each. */
+.cell {
+  display: inline-block;
+  width: 1ch;
+  text-align: center;
+}
+
+.selected {
+  background-color: #f5f5f714;
+}
+
+.idle {
+  opacity: 0.55;
+}
+
+.centered {
+  justify-content: center;
+}
+
+.centerFill {
+  flex: 1;
+  text-align: center;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.text2 {
+  color: #f5f5f799;
+}
+
+.text3 {
+  color: #f5f5f766;
+}
+
+.faint {
+  color: #f5f5f733;
+}
+
+.label {
+  width: 13ch;
+  flex-shrink: 0;
+}
+
+.value {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Glyphs sit on the cell's bottom edge, like ▅ █ ▂ in a terminal. */
+.bar {
+  display: flex;
+  align-items: flex-end;
+  height: 15px;
+  margin: 0 8px;
+}
+
+.segment {
+  height: 62%;
+  opacity: 0.35;
+  transition:
+    height 0.12s ease,
+    opacity 0.12s ease;
+}
+
+.segment[data-lit='true'] {
+  opacity: 1;
+}
+
+.segment[data-selected='true'] {
+  height: 100%;
+}
+
+.baseline,
+.track {
+  height: 25%;
+  background-color: #f5f5f747;
+}
+
+.track {
+  flex: 1;
+  background-color: #f5f5f71f;
+}
+
+.swatch {
+  align-self: flex-end;
+  width: 6.6px;
+  margin: 0 6.6px 3px 0;
+}
+
+.swatch:not(:first-child) {
+  margin-left: 19.8px;
+}
+
+.divider {
+  height: 15px;
+  margin: 0 -12px;
+  background: linear-gradient(#f5f5f71f, #f5f5f71f) center / 100% 1px no-repeat;
+}
+
+.port {
+  width: 7ch;
+  flex-shrink: 0;
+  font-weight: 500;
+}
+
+.name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 500;
+}
+
+.spark {
+  margin-left: 1ch;
+  color: #f5f5f7b3;
+}
+
+.memory {
+  width: 9ch;
+  flex-shrink: 0;
+  text-align: right;
+}
+
+.indent {
+  width: 7ch;
+  flex-shrink: 0;
+}
+
+.hints {
+  gap: 3ch;
+}
+
+.cursor {
+  width: 1ch;
+  height: 13px;
+  align-self: center;
+  background-color: #f5f5f7cc;
+}
+
+.blink {
+  animation: blink 1.06s steps(1) infinite;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shell,
+  .segment {
+    transition: none;
+  }
+  .blink {
+    animation: none;
+  }
+}

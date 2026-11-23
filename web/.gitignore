@@ -1,0 +1,11 @@
+node_modules/
+.next/
+out/
+*.tsbuildinfo
+next-env.d.ts
+.env*
+.vercel
+# Built in ../app with ./build-app.sh and ./make-dmg.sh; never commit the download.
+public/Porto.dmg
+public/updates/
+.context/

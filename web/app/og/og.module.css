@@ -1,0 +1,90 @@
+.card {
+  position: fixed;
+  inset: 0 auto auto 0;
+  width: 1200px;
+  height: 630px;
+  overflow: hidden;
+  color: #ffffff;
+  font-family: Geist, sans-serif;
+  background:
+    radial-gradient(560px 420px at 78% 42%, #7d9cf22e, transparent 70%),
+    radial-gradient(420px 320px at 12% 100%, #eb9cd41a, transparent 70%),
+    linear-gradient(180deg, #1c2231 0%, #090c13 100%);
+}
+
+.copy {
+  position: absolute;
+  inset: 64px auto 64px 64px;
+  width: 600px;
+  display: flex;
+  flex-direction: column;
+}
+
+.ring {
+  display: grid;
+  grid-template-columns: repeat(5, 8px);
+  gap: 5px;
+}
+
+.ring span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ffffff14;
+}
+
+.name {
+  margin: auto 0 0;
+  font-size: 196px;
+  line-height: 0.86;
+  font-weight: 500;
+  letter-spacing: -0.065em;
+}
+
+.tagline {
+  margin: 36px 0 0;
+  max-width: 470px;
+  font-size: 30px;
+  line-height: 38px;
+  letter-spacing: -0.012em;
+  color: #ffffffb3;
+  text-wrap: balance;
+}
+
+.menuBar {
+  position: absolute;
+  top: 64px;
+  left: 716px;
+  width: 436px;
+  height: 40px;
+  padding: 0 18px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 22px;
+  border-radius: 10px;
+  background: #16181f;
+  box-shadow: inset 0 0 0 0.5px #ffffff1a;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.statusItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px 4px 6px;
+  border-radius: 6px;
+  background: #ffffff33;
+}
+
+.count {
+  font-family: 'Geist Mono', monospace;
+}
+
+.popover {
+  position: absolute;
+  top: 114px;
+  left: 736px;
+  width: 400px;
+}
