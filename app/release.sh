@@ -65,8 +65,11 @@ notarize() {
         echo "Notarizing $1 ended with status ${status}." >&2
         exit 1
     fi
-    xcrun stapler staple "$1"
-    xcrun stapler validate "$1"
+    # Zips can't hold a ticket; the app inside is stapled by the caller.
+    if [[ "$1" != *.zip ]]; then
+        xcrun stapler staple "$1"
+        xcrun stapler validate "$1"
+    fi
 }
 
 if [[ ${#NOTARY[@]} -gt 0 ]]; then
